@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <TextView
+            android:id="@+id/mainTitle"
+            android:textSize="50sp"
+            android:fontFamily="sans-serif-medium"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ScreenCtrl" />
+
+        <Button
+            android:id="@+id/statisticsButton"
+            android:textSize="30sp"
+            android:textColor="#2c5e21"
+            android:backgroundTint="#98ce8d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="toAppStatisticsActivity"
+            android:text="Статистика" />
+
+        <Button
+            android:id="@+id/settingsButton"
+            android:textSize="30sp"
+            android:textColor="#2c5e21"
+            android:backgroundTint="#98ce8d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Настройки" />
+
+        <Button
+            android:id="@+id/aboutDevButton"
+            android:textSize="30sp"
+            android:textColor="#2c5e21"
+            android:backgroundTint="#98ce8d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Об авторе" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
