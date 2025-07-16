@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.screenctrl"
+    namespace = "bsdev.screenctrl"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.screenctrl"
+        applicationId = "bsdev.screenctrl"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

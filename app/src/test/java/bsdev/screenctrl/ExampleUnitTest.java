@@ -1,4 +1,4 @@
-package com.example.screenctrl;
+package bsdev.screenctrl;
 
 import org.junit.Test;
 
