@@ -1,13 +1,14 @@
-package com.example.screenctrl;
+package bsdev.screenctrl.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Button;
 import android.view.View;
 import android.content.Intent;
 import android.app.AppOpsManager;
 import android.provider.Settings;
 import android.content.Context;
+
+import bsdev.screenctrl.R;
 
 public class MainActivity extends AppCompatActivity {
 
