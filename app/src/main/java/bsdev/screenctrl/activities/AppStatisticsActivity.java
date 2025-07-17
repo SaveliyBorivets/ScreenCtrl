@@ -6,13 +6,16 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import bsdev.screenctrl.R;
-import bsdev.screenctrl.entity.AppInfo;
+import bsdev.screenctrl.container.AppInfo;
 import bsdev.screenctrl.adapters.AppInfoAdapter;
 
 import java.text.SimpleDateFormat;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class AppStatisticsActivity extends AppCompatActivity {
     ArrayList<AppInfo> appsInfo;
@@ -30,13 +34,11 @@ public class AppStatisticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Установка макета
         setContentView(R.layout.statistics_layout);
+        // Меню выбора
+        setSupportActionBar(findViewById(R.id.toolbar));
 
         appsInfo = new ArrayList<>();
-        try {
-            transferStatisticsToList();
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        transferStatisticsToList("Неделя");
         // получаем элемент ListView
         appListView = findViewById(R.id.appList);
         // создаем адаптер
@@ -45,30 +47,56 @@ public class AppStatisticsActivity extends AppCompatActivity {
         appListView.setAdapter(stateAdapter);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.statistics_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        appsInfo.clear();
+        transferStatisticsToList(item.getTitle().toString());
+        AppInfoAdapter stateAdapter = new AppInfoAdapter(this, R.layout.app_info_layout, appsInfo);
+        appListView.setAdapter(stateAdapter);
+        return super.onOptionsItemSelected(item);
+    }
+
     // Получение информации об использовании
-    private void transferStatisticsToList() throws PackageManager.NameNotFoundException {
+    private void transferStatisticsToList(String period) {
         // Достаем данные об использовании
         UsageStatsManager usageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
         // Устанавливаем текущее время
         Calendar calendar = Calendar.getInstance();
-        // Вычитаем неделю
-        calendar.add(Calendar.DAY_OF_YEAR, -1);
 
-        // Берем статистику от недели назад до текущего времени
-        List<UsageStats> stats = usageStatsManager.queryUsageStats(
-                UsageStatsManager.INTERVAL_DAILY,
+        switch (period) {
+            case "День":
+                calendar.add(Calendar.DAY_OF_YEAR, -1);
+                break;
+            case "Неделя":
+                calendar.add(Calendar.WEEK_OF_YEAR, -1);
+                break;
+            case "Год":
+                calendar.add(Calendar.YEAR, -1);
+                break;
+        }
+
+        // Берем статистику
+        Map<String, UsageStats> stats = usageStatsManager.queryAndAggregateUsageStats(
                 calendar.getTimeInMillis(),
                 System.currentTimeMillis()
         );
 
-        for (UsageStats usageStats : stats) {
+        for (String key : stats.keySet()) {
+            UsageStats usageStats = stats.get(key);
             if (usageStats.getTotalTimeInForeground() > 0) {
                 // Собираем необходимые данные
                 String packageName = usageStats.getPackageName();
                 long periodTotalUse = usageStats.getTotalTimeInForeground();
                 Date date = new Date(usageStats.getLastTimeUsed());
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                String time = sdf.format(date);
+                String datetime = sdf.format(date);
                 Drawable icon;
                 try {
                     PackageManager packageManager = getPackageManager();
@@ -77,8 +105,7 @@ public class AppStatisticsActivity extends AppCompatActivity {
                     icon = ContextCompat.getDrawable(this, R.drawable.ic_launcher_background);
                 }
 
-                appsInfo.add(new AppInfo(packageName, icon));
-//                appsInfo.addAppInfo(packageName, periodTotalUse, time);
+                appsInfo.add(new AppInfo(packageName, icon, periodTotalUse, datetime));
             }
         }
     }

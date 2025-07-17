@@ -11,7 +11,7 @@ import android.widget.TextView;
 import bsdev.screenctrl.R;
 
 import java.util.List;
-import bsdev.screenctrl.entity.AppInfo;
+import bsdev.screenctrl.container.AppInfo;
 
 public class AppInfoAdapter extends ArrayAdapter<AppInfo> {
     private LayoutInflater inflater; // Для хранения созданного макета
@@ -30,12 +30,15 @@ public class AppInfoAdapter extends ArrayAdapter<AppInfo> {
         View view = inflater.inflate(this.layout, parent, false);
 
         ImageView flagView = view.findViewById(R.id.appImage);
-        TextView nameView = view.findViewById(R.id.appInfo);
+        TextView nameView = view.findViewById(R.id.appName);
+        TextView description = view.findViewById(R.id.appInfo);
 
         AppInfo app = appInformation.get(position);
 
         flagView.setImageDrawable(app.getIcon());
         nameView.setText(app.getAppName());
+        description.setText("Проведено: " + app.getAppUseTimeInMinutes() + " мин.\n" +
+                            "Последнее посещение: " + app.getAppLastDayUse());
 
         return view;
     }
